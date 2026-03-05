@@ -1,9 +1,11 @@
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default function App() {
   return (
     <>
       <Navbar />
+
       <main className="pt-24">
         <section id="home" className="min-h-screen p-10">
           Home
@@ -21,6 +23,8 @@ export default function App() {
           Contact
         </section>
       </main>
+
+      <Footer />
     </>
   );
 }
