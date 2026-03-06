@@ -1,27 +1,40 @@
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
+
+// Temporary placeholders so navigation works without errors
+function Placeholder({ title }) {
+  return (
+    <section className="min-h-[70vh] pt-28 px-6">
+      <h1 className="text-3xl font-bold">{title}</h1>
+      <p className="mt-2 text-gray-600">This page is under construction.</p>
+    </section>
+  );
+}
 
 export default function App() {
   return (
     <>
       <Navbar />
 
+      {/* keep spacing because navbar is fixed */}
       <main className="pt-24">
-        <section id="home" className="min-h-screen p-10">
-          Home
-        </section>
-        <section id="about" className="min-h-screen p-10">
-          About
-        </section>
-        <section id="services" className="min-h-screen p-10">
-          Services
-        </section>
-        <section id="gallery" className="min-h-screen p-10">
-          Gallery
-        </section>
-        <section id="contact" className="min-h-screen p-10">
-          Contact
-        </section>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route path="/about" element={<Placeholder title="About" />} />
+          <Route path="/services" element={<Placeholder title="Services" />} />
+          <Route path="/gallery" element={<Placeholder title="Gallery" />} />
+          <Route path="/contact" element={<Placeholder title="Contact" />} />
+
+          {/* These are used in your Home.jsx buttons */}
+          <Route path="/shop" element={<Placeholder title="Shop" />} />
+          <Route path="/investment" element={<Placeholder title="Investment" />} />
+          <Route path="/ideas" element={<Placeholder title="Ideas" />} />
+          <Route path="/news" element={<Placeholder title="News" />} />
+        </Routes>
       </main>
 
       <Footer />
