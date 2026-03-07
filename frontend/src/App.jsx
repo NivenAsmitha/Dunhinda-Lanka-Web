@@ -3,6 +3,9 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Gallery from "./pages/Gallery";
 
 // Temporary placeholders so navigation works without errors
 function Placeholder({ title }) {
@@ -23,10 +26,10 @@ export default function App() {
       <main className="pt-24">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
 
-          <Route path="/about" element={<Placeholder title="About" />} />
-          <Route path="/services" element={<Placeholder title="Services" />} />
-          <Route path="/gallery" element={<Placeholder title="Gallery" />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Placeholder title="Contact" />} />
 
           {/* These are used in your Home.jsx buttons */}

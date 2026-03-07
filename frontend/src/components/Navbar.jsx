@@ -1,15 +1,18 @@
 // src/components/Navbar.jsx
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/Logo.png";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Gallery", href: "#gallery" },
+  { label: "About", route: "/about" },
+  { label: "Services", route: "/services" },
+  { label: "Gallery", route: "/gallery" },
 ];
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("#home");
@@ -68,6 +71,46 @@ export default function Navbar() {
     }
   };
 
+  const isNavItemActive = (item) => {
+    if (item.route) return location.pathname === item.route;
+    return location.pathname === "/" && activeSection === item.href;
+  };
+
+  const handleNavClick = (item) => {
+    if (item.route) {
+      setIsOpen(false);
+      navigate(item.route);
+      return;
+    }
+
+    if (location.pathname !== "/") {
+      setIsOpen(false);
+      navigate(item.href === "#home" ? "/" : `/${item.href}`);
+      return;
+    }
+
+    scrollToSection(item.href);
+  };
+
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+
+    const hash = location.hash;
+    if (!hash) {
+      setActiveSection("#home");
+      return;
+    }
+
+    setActiveSection(hash);
+    const id = hash.replace("#", "");
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const offset = 88;
+    const y = element.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top: y, behavior: "smooth" });
+  }, [location.pathname, location.hash]);
+
   return (
     <>
       {/* ── HEADER ── */}
@@ -113,24 +156,24 @@ export default function Navbar() {
 
             {/* ── Desktop Links ── */}
             <div className="hidden md:flex items-center gap-2 lg:gap-3">
-              {NAV_LINKS.map(({ label, href }) => (
+              {NAV_LINKS.map((item) => (
                 <button
-                  key={href}
+                  key={item.label}
                   type="button"
-                  onClick={() => scrollToSection(href)}
+                  onClick={() => handleNavClick(item)}
                   className={`
                     relative px-4 lg:px-5 py-2.5 text-sm lg:text-base font-medium rounded-xl
                     transition-all duration-300
                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2
                     ${
-                      activeSection === href
+                      isNavItemActive(item)
                         ? "text-sky-700 bg-sky-50/90 font-semibold shadow-sm"
                         : "text-slate-700 hover:text-sky-700 hover:bg-sky-50/40"
                     }
                   `}
                 >
-                  {label}
-                  {activeSection === href && (
+                  {item.label}
+                  {isNavItemActive(item) && (
                     <span className="absolute inset-x-4 bottom-1.5 h-0.5 bg-gradient-to-r from-sky-400 to-blue-500 rounded-full" />
                   )}
                 </button>
@@ -258,16 +301,16 @@ export default function Navbar() {
 
         {/* Links */}
         <nav className="flex-1 overflow-y-auto px-5 py-8 space-y-2">
-          {NAV_LINKS.map(({ label, href }, i) => (
+          {NAV_LINKS.map((item, i) => (
             <button
-              key={href}
+              key={item.label}
               type="button"
-              onClick={() => scrollToSection(href)}
+              onClick={() => handleNavClick(item)}
               className={`
                 group flex w-full items-center gap-4 px-5 py-4 rounded-xl text-base font-medium
                 transition-all duration-400 border
                 ${
-                  activeSection === href
+                  isNavItemActive(item)
                     ? "bg-sky-50/80 border-sky-100 text-sky-700"
                     : "border-transparent text-slate-700 hover:bg-slate-50 hover:text-slate-900"
                 }
@@ -277,13 +320,13 @@ export default function Navbar() {
             >
               <div
                 className={`h-2.5 w-2.5 rounded-full flex-shrink-0 ${
-                  activeSection === href
+                  isNavItemActive(item)
                     ? "bg-sky-500"
                     : "bg-slate-300 group-hover:bg-slate-400"
                 } transition-colors`}
               />
-              {label}
-              {activeSection === href && (
+              {item.label}
+              {isNavItemActive(item) && (
                 <svg
                   className="ml-auto h-5 w-5 text-sky-500"
                   fill="none"
